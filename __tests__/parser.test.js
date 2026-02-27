@@ -110,7 +110,7 @@ describe('Parser Tests', () => {
       expect(() => parse("3 +")).toThrow();
       expect(() => parse("+ 3")).toThrow();
       expect(() => parse("3 + + 4")).toThrow();
-      expect(() => parse("3.5")).toThrow(); // Only integers are supported
+      expect(() => parse("@")).toThrow(); // Only integers are supported
     });
 
     test('should handle incomplete expressions', () => {
@@ -128,4 +128,20 @@ describe('Parser Tests', () => {
     });
   });
 
+  describe('Scientific notation', () => {
+    test('should handle scientific notation', () => {
+      expect(parse("1e2")).toBe(100);
+      expect(parse("1.5e2")).toBe(150);
+      expect(parse("2e-1")).toBe(0.2);
+      expect(parse("3.5e-2")).toBe(0.035);
+    });
+  });
+
+  describe('One line comments', () => {
+    test('should ignore one line comments', () => {
+      expect(parse("3 + 5 // this is a comment")).toBe(8);
+      expect(parse("10 - 2 // subtracting 2")).toBe(8);
+      expect(parse("4 * 6 // multiplication")).toBe(24);
+    });
+  });
 });
