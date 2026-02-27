@@ -1,3 +1,39 @@
+# Informe Práctica 4
+
+## Respuestas al punto 3 (lexer)
+
+### 3.1 Diferencia entre `/* skip whitespace */` y devolver un token
+
+- `/* skip whitespace */` consume espacios en blanco (`\s+`) y **no devuelve ningún token** al parser.
+- Devolver un token (por ejemplo, `NUMBER` u `OP`) significa que el lexer entrega una unidad léxica al parser para que participe en el análisis sintáctico.
+
+### 3.2 Secuencia de tokens para la entrada `123**45+@`
+
+La secuencia exacta producida por el lexer es:
+
+1. `NUMBER` con lexema `123`
+2. `OP` con lexema `**`
+3. `NUMBER` con lexema `45`
+4. `OP` con lexema `+`
+5. `INVALID` con lexema `@`
+6. `EOF`
+
+### 3.3 Por qué `**` debe aparecer antes que `[-+*/]`
+
+- `**` es un operador de dos caracteres, mientras que `[-+*/]` reconoce operadores de un carácter (incluido `*`).
+- Si la regla de `[-+*/]` se aplica antes en un lexer basado en prioridad por orden de reglas, la cadena `**` podría separarse como dos `*` en lugar de un único operador de potencia.
+- Colocar primero la regla más específica evita esa ambigüedad y garantiza el token correcto para potencia.
+
+### 3.4 Cuándo se devuelve `EOF`
+
+- `EOF` se devuelve cuando el lexer alcanza el final de la entrada (`<<EOF>>`), es decir, cuando ya no quedan caracteres por leer.
+
+### 3.5 Por qué existe la regla `.` que devuelve `INVALID`
+
+- La regla `.` actúa como captura de cualquier carácter no reconocido por las reglas anteriores.
+- Devolver `INVALID` permite detectar y reportar errores léxicos explícitos (por ejemplo, `@`) en lugar de ignorarlos silenciosamente.´
+
+
 # Syntax Directed Translation with Jison
 
 Jison is a tool that receives as input a Syntax Directed Translation and produces as output a JavaScript parser  that executes
