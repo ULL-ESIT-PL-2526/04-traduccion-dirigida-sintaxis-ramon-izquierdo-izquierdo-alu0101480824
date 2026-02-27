@@ -2,8 +2,9 @@
 %lex
 %%
 \s+                   { /* skip whitespace */; }
-[0-9]+                { return 'NUMBER';       }
+[0-9]+(\.[0-9]+)?([eE][+-]?[0-9]+)?   { return 'NUMBER'; }
 "**"                  { return 'OP';           }
+\/\/[^\n]*            { /* skip line comment */; }
 [-+*/]                { return 'OP';           }
 <<EOF>>               { return 'EOF';          }
 .                     { return 'INVALID';      }
