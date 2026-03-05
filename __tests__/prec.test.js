@@ -52,4 +52,22 @@ describe('Parser Failing Tests', () => {
     expect(parse("2.0 ** 2.0 * 1.5 + 0.5")).toBeCloseTo(6.5); // (2.0 ** 2.0) * 1.5 + 0.5
     expect(parse("1.5 + 2.0 ** 3.0 / 4.0")).toBeCloseTo(3.5); // 1.5 + ((2.0 ** 3.0) / 4.0)
   });
+
+  test('should respect precedence changes introduced by parentheses', () => {
+    expect(parse("(1 + 2) * 3")).toBe(9); // (1 + 2) * 3
+    expect(parse("10 / (2 + 3)")).toBe(2); // 10 / (2 + 3)
+    expect(parse("(8 - 3) * (2 + 1)")).toBe(15); // (8 - 3) * (2 + 1)
+  });
+
+  test('should respect parentheses with exponentiation precedence', () => {
+    expect(parse("(2 + 1) ** 2")).toBe(9); // (2 + 1) ** 2
+    expect(parse("2 ** (1 + 2)")).toBe(8); // 2 ** (1 + 2)
+    expect(parse("(2 ** 3) ** 2")).toBe(64); // (2 ** 3) ** 2
+  });
+
+  test('should handle nested parentheses with mixed operators', () => {
+    expect(parse("((1 + 2) * (3 + 4)) / 7")).toBe(3); // ((1 + 2) * (3 + 4)) / 7
+    expect(parse("(5 - (1 + 1)) * (2 + 3)")).toBe(15); // (5 - (1 + 1)) * (2 + 3)
+    expect(parse("2 * (3 + (4 * 2))")).toBe(22); // 2 * (3 + (4 * 2))
+  });
 });
