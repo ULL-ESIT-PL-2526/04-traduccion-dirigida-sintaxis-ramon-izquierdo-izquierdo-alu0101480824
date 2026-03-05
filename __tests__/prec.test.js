@@ -34,4 +34,22 @@ describe('Parser Failing Tests', () => {
     expect(parse("100 - 50 + 25")).toBe(75); // (100 - 50) + 25 = 75
     expect(parse("2 * 3 + 4 * 5")).toBe(26); // (2 * 3) + (4 * 5) = 26
   });
+
+  test('should handle precedence correctly with floating-point numbers', () => {
+    expect(parse("1.5 + 2.5 * 2")).toBeCloseTo(6.5); // 1.5 + (2.5 * 2)
+    expect(parse("7.2 - 3.6 / 1.2")).toBeCloseTo(4.2); // 7.2 - (3.6 / 1.2)
+    expect(parse("1.2 * 3.0 + 0.4")).toBeCloseTo(4.0); // (1.2 * 3.0) + 0.4
+  });
+
+  test('should handle associativity correctly with floating-point numbers', () => {
+    expect(parse("9.0 / 3.0 / 1.5")).toBeCloseTo(2.0); // (9.0 / 3.0) / 1.5
+    expect(parse("5.5 - 2.2 - 1.1")).toBeCloseTo(2.2); // (5.5 - 2.2) - 1.1
+    expect(parse("2.5 ** 2.0 ** 2.0")).toBeCloseTo(39.0625); // 2.5 ** (2.0 ** 2.0)
+  });
+
+  test('should handle mixed precedence and associativity with floating-point numbers', () => {
+    expect(parse("1.1 + 2.2 * 3.0 - 0.5")).toBeCloseTo(7.2); // 1.1 + (2.2 * 3.0) - 0.5
+    expect(parse("2.0 ** 2.0 * 1.5 + 0.5")).toBeCloseTo(6.5); // (2.0 ** 2.0) * 1.5 + 0.5
+    expect(parse("1.5 + 2.0 ** 3.0 / 4.0")).toBeCloseTo(3.5); // 1.5 + ((2.0 ** 3.0) / 4.0)
+  });
 });
