@@ -7,6 +7,8 @@
 "**"                  { return 'OPPOW';           }
 [*/]                  { return 'OPMUL'; }
 [-+]                  { return 'OPAD';           }
+"("                   { return '('; }
+")"                   { return ')'; }
 <<EOF>>               { return 'EOF';          }
 .                     { return 'INVALID';      }
 /lex
@@ -45,6 +47,8 @@ registro
 final
     : NUMBER
         { $$ = Number(yytext); }
+    | '(' expression ')'
+        { $$ = $expression; }   
     ;
 %%
 
