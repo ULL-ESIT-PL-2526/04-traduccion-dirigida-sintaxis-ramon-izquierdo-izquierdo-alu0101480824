@@ -2,10 +2,11 @@
 %lex
 %%
 \s+                   { /* skip whitespace */; }
-[0-9]+(\.[0-9]+)?([eE][+-]?[0-9]+)?   { return 'NUMBER'; }
-"**"                  { return 'OP';           }
 \/\/[^\n]*            { /* skip line comment */; }
-[-+*/]                { return 'OP';           }
+[0-9]+(\.[0-9]+)?([eE][+-]?[0-9]+)?   { return 'NUMBER'; }
+"**"                  { return 'OPPOW';           }
+[*/]                  { return 'OPMUL'; }
+[-+]                  { return 'OPAD';           }
 <<EOF>>               { return 'EOF';          }
 .                     { return 'INVALID';      }
 /lex
@@ -21,13 +22,27 @@ expressions
     ;
 
 expression
-    : expression OP term
-        { $$ = operate($OP, $expression, $term); }
+    : expression OPAD term
+        { $$ = operate($OPAD, $expression, $term); }
     | term
         { $$ = $term; }
     ;
 
-term
+term 
+    : term OPMUL registro
+        { $$ = operate($OPMUL, $term, $registro); }
+    | registro
+        { $$ = $registro; }
+    ;
+
+registro 
+    : final OPPOW registro
+        { $$ = operate($OPPOW, $final, $registro); }
+    | final 
+        { $$ = $final; }
+    ;
+
+final
     : NUMBER
         { $$ = Number(yytext); }
     ;
