@@ -70,4 +70,17 @@ describe('Parser Failing Tests', () => {
     expect(parse("(5 - (1 + 1)) * (2 + 3)")).toBe(15); // (5 - (1 + 1)) * (2 + 3)
     expect(parse("2 * (3 + (4 * 2))")).toBe(22); // 2 * (3 + (4 * 2))
   });
+
+  test('Should handle factorials with correct precedence', () => {
+    expect(parse("5!")).toBe(120);
+    expect(parse("3! + 2")).toBe(8); // (3!) + 2 = 6 + 2 = 8
+    expect(parse("4! * 2")).toBe(48); // (4!) * 2 = 24 * 2 = 48
+    expect(parse("6! / 3!")).toBe(120); // (6!) / (3!) = 720 / 6 = 120
+    expect(parse("5! - 10")).toBe(110); // (5!) - 10 = 120 - 10 = 110
+    expect(parse("2 * 3!")).toBe(12); // 2 * (3!) = 2 * 6 = 12
+    expect(parse("4! + 3!")).toBe(30); // (4!) + (3!) = 24 + 6 = 30
+    expect(parse("5! / 2")).toBe(60); // (5!) / 2 = 120 / 2 = 60
+    expect(parse("3! ** 2")).toBe(36); // (3!) ** 2 = 6 ** 2 = 36
+    expect(parse("4! - 3! + 2")).toBe(20); // (4!) - (3!) + 2 = 24 - 6 + 2 = 20
+  });
 });

@@ -4,6 +4,7 @@
 \s+                   { /* skip whitespace */; }
 \/\/[^\n]*            { /* skip line comment */; }
 [0-9]+(\.[0-9]+)?([eE][+-]?[0-9]+)?   { return 'NUMBER'; }
+"!"                   { return '!'; }
 "**"                  { return 'OPPOW';           }
 [*/]                  { return 'OPMUL'; }
 [-+]                  { return 'OPAD';           }
@@ -45,7 +46,9 @@ registro
     ;
 
 final
-    : NUMBER
+    : final '!'
+        { $$ = factorial($final); }
+    | NUMBER
         { $$ = Number(yytext); }
     | '(' expression ')'
         { $$ = $expression; }   
@@ -60,4 +63,10 @@ function operate(op, left, right) {
         case '/': return left / right;
         case '**': return Math.pow(left, right);
     }
+}
+
+function factorial(n) {
+    if (n <= 0) return NaN;
+    if (n === 1) return 1;
+    return n * factorial(n - 1);
 }
