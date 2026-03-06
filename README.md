@@ -1,3 +1,111 @@
+# Informe práctica 5
+
+## Respuestas preguntas del punto 1
+
+### 1.1 Escriba la derivación para cada una de las frases. 
+
+> Para **4.0-2.0*3.0**:
+
+L => E eof => E op T eof => (E op T) op T eof => (T op T) op T eof => (number op T) op T eof => (4.0 - T) op T eof =>
+  (4.0 - number) op T eof => (4.0 - 2.0) * T eof => (4.0 - 2.0) * number eof => 4.0 - 2.0 * 3.0 eof
+
+> Para **2\*\*3\*\*2**:
+
+L => E eof => E op T eof => (E op T) op T eof => (T op T) op T eof => (number op T) op T eof => (2 op T) op T eof => (2 ** T) op T eof 
+  => (2 ** number) op T eof => (2 ** 3) op T eof => (2 ** 3) ** T eof => (2 ** 3) ** number eof => 2 ** 3 ** 2 eof
+
+> Para **7-4/2**:
+
+L => E eof => E op T eof => (E op T) op T eof => (T op T) op T eof => (number op T) op T eof => (7 op T) op T eof => 
+  (7 - T) op T eof => (7 - number) op T eof => (7 - 4) op T eof => (7 - 4) / T eof => (7 - 4) / number eof => 7 - 4 / 2 eof
+
+
+### 1.2 Escriba el árbol de análisis sintáctico (parse tree) para cada una de las frases.
+
+> Para **4.0-2.0*3.0**:
+
+```text
+L
+├── E
+│   ├── E
+│   │   ├── E
+│   │   │   └── T
+│   │   │       └── number("4.0")
+│   │   ├── op("-")
+│   │   └── T
+│   │       └── number("2.0")
+│   ├── op("*")
+│   └── T
+│       └── number("3.0")
+└── eof
+```
+
+> Para **2\*\*3\*\*2**:
+
+```text
+L
+├── E
+│   ├── E
+│   │   ├── E
+│   │   │   └── T
+│   │   │       └── number("2")
+│   │   ├── op("**")
+│   │   └── T
+│   │       └── number("3")
+│   ├── op("**")
+│   └── T
+│       └── number("2")
+└── eof
+```
+
+> Para **7-4/2**:
+
+```text
+L
+├── E
+│   ├── E
+│   │   ├── E
+│   │   │   └── T
+│   │   │       └── number("7")
+│   │   ├── op("-")
+│   │   └── T
+│   │       └── number("4")
+│   ├── op("/")
+│   └── T
+│       └── number("2")
+└── eof
+```
+
+### 1.3 ¿En qué orden se evaluan las acciones semánticas para cada una de las frases? Nótese que la evaluación a la que da lugar la sdd para las frases no se corresponde con  los convenios de evaluación establecidos en matemáticas y los lenguajes de programación.
+
+Es importante notar que para una SDD (Definición dirigida por sintaxis) el orden de evaluación de las acciones semánticas viene determinado por el recorrido en post-orden del árbol de análisis sintáctico. En esta SDD, los variables se sintetizan hacia arriba, una regla no puede ejecutarse hasta que todos los nodos hijos que influyen en dicha acción hayan sido calculados.
+
+> Para **4.0-2.0*3.0**:
+
+1. convert("4.0")
+2. convert("2.0")
+3. operate("-", 4.0, 2.0)
+4. convert("3.0")
+5. operate("\*", 2.0, 3.0) *Nótese que el 2.0 es el resultado del operate anterior*
+
+> Para **2\*\*3\*\*2**:
+
+1. convert("2")
+2. convert("3")
+3. operate("**", 2, 3)
+4. convert("2")
+5. operate("\*\*", 8, 2) *Nótese que el 8 es el resultado del operate anterior*
+
+> Para **7-4/2**:
+
+1. convert("7")
+2. convert("4")
+3. operate("-", 7, 4)
+4. convert("2")
+5. operate("/", 3, 2) *Nótese que el 3 es el resultado del operate anterior*
+
+
+
 # Informe Práctica 4
 
 ## Respuestas al punto 3 (lexer)
@@ -32,7 +140,6 @@ La secuencia exacta producida por el lexer es:
 
 - La regla `.` actúa como captura de cualquier carácter no reconocido por las reglas anteriores.
 - Devolver `INVALID` permite detectar y reportar errores léxicos explícitos (por ejemplo, `@`) en lugar de ignorarlos silenciosamente.´
-
 
 # Syntax Directed Translation with Jison
 
